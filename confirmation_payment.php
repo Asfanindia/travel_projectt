@@ -198,11 +198,9 @@ $sql = "
         payment_id,
         payment_type,
         status
-
     FROM payments
-
     WHERE transaction_id = ?
-
+    ORDER BY payment_id DESC
     LIMIT 1
 ";
 
@@ -212,21 +210,18 @@ if (!$stmt) {
     die("Query payment gagal: " . $conn->error);
 }
 
-$stmt->bind_param(
-    "i",
-    $transaction_id
-);
-
+$stmt->bind_param("i", $transaction_id);
 $stmt->execute();
 
 $payment = $stmt->get_result()->fetch_assoc();
+$stmt->close();
 
-$payment_type = $payment['payment_type'] ?? "Cash";
 
-$display_payment_type =
-    ($payment_type === 'Card')
-        ? 'Credit / Debit Card'
-        : 'Cash';
+$payment_type = $payment['payment_type'] ?? '';
+
+$display_payment_type = ($payment_type === 'Card')
+    ? 'Credit / Debit Card'
+    : (($payment_type === 'Cash') ? 'Cash' : 'Unknown');
 
 
 /* =========================================================
