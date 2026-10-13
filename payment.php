@@ -5,10 +5,15 @@ $booking_id = (int)($_GET['booking_id'] ?? $_POST['booking_id'] ?? 2);
 $passenger_id = (int)($_POST['passenger_id'] ?? 0);
 $full_name = $_POST['full_name'] ?? '';
 
+/* =========================
+   BOOKING
+========================= */
 $sql = "SELECT b.booking_id, b.trip_type, u.name AS user_name
         FROM bookings b
         LEFT JOIN users u ON b.user_id = u.user_id
-        WHERE b.booking_id = ? LIMIT 1";
+        WHERE b.booking_id = ?
+        LIMIT 1";
+
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $booking_id);
 $stmt->execute();
@@ -18,31 +23,46 @@ if (!$booking) {
     die("Booking tidak ditemukan.");
 }
 
+/* =========================
+   TRIP PERGI
+========================= */
 $sql = "SELECT tp.trippergi_id, tp.travel_date, tp.departure_date,
-        p1.name AS origin, p2.name AS destination
+               p1.name AS origin, p2.name AS destination
         FROM tripdetailspergi tp
         LEFT JOIN places p1 ON tp.origin_id = p1.place_id
         LEFT JOIN places p2 ON tp.destination_id = p2.place_id
-        WHERE tp.booking_id = ? LIMIT 1";
+        WHERE tp.booking_id = ?
+        LIMIT 1";
+
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $booking_id);
 $stmt->execute();
 $pergi = $stmt->get_result()->fetch_assoc();
 
+/* =========================
+   TRIP PULANG
+========================= */
 $sql = "SELECT tr.trippulang_id, tr.travel_date, tr.departure_date,
-        p1.name AS origin, p2.name AS destination
+               p1.name AS origin, p2.name AS destination
         FROM tripdetailspulang tr
         LEFT JOIN places p1 ON tr.origin_id = p1.place_id
         LEFT JOIN places p2 ON tr.destination_id = p2.place_id
-        WHERE tr.booking_id = ? LIMIT 1";
+        WHERE tr.booking_id = ?
+        LIMIT 1";
+
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $booking_id);
 $stmt->execute();
 $pulang = $stmt->get_result()->fetch_assoc();
 
+/* =========================
+   TRANSACTION
+========================= */
 $sql = "SELECT transaction_id, total_amount, payment_status
         FROM transactions
-        WHERE booking_id = ? LIMIT 1";
+        WHERE booking_id = ?
+        LIMIT 1";
+
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $booking_id);
 $stmt->execute();
@@ -155,7 +175,26 @@ h1 {
 .description {
     color: #758198;
     font-size: 13px;
-    margin-bottom: 25px;
+    margin-bottom: 18px;
+}
+
+/* PAYMENT HISTORY BUTTON */
+.payment-history-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 11px 16px;
+    background: #eaf3ff;
+    color: #1688f7;
+    border: 1px solid #d7e8ff;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+    transition: background 0.2s ease;
+}
+
+.payment-history-link:hover {
+    background: #dcecff;
 }
 
 .trip-box {
@@ -250,7 +289,8 @@ h1 {
     font-weight: bold;
 }
 
-.form-group input, .form-group select {
+.form-group input,
+.form-group select {
     width: 100%;
     height: 42px;
     border: 1px solid #d6deea;
@@ -260,7 +300,8 @@ h1 {
     background: white;
 }
 
-.form-group input:focus, .form-group select:focus {
+.form-group input:focus,
+.form-group select:focus {
     outline: none;
     border-color: #1688f7;
 }
@@ -423,12 +464,18 @@ hr {
 <div class="container">
 
 <main class="card">
+
     <div class="label">SECURE CHECKOUT</div>
     <h1>Confirm and Pay</h1>
 
     <p class="description">
         Review your trip details and choose your preferred payment method.
     </p>
+
+    <!-- PAYMENT HISTORY BUTTON -->
+    <a href="my_payments.php" class="payment-history-link">
+        View Payment History →
+    </a>
 
     <div class="trip-box">
         <div class="trip-label">DEPARTURE</div>
@@ -480,6 +527,7 @@ hr {
         <input type="hidden" name="full_name"
                value="<?= htmlspecialchars($full_name) ?>">
 
+        <!-- CARD PAYMENT -->
         <div class="payment-option">
             <label class="method">
                 <input type="radio" name="payment_type"
@@ -532,6 +580,7 @@ hr {
             </div>
         </div>
 
+        <!-- CASH PAYMENT -->
         <div class="payment-option">
             <label class="method">
                 <input type="radio" name="payment_type"
@@ -567,7 +616,9 @@ hr {
     </form>
 </main>
 
+<!-- BOOKING SUMMARY -->
 <aside class="summary">
+
     <h2>Booking Summary</h2>
 
     <div class="summary-route">
@@ -625,23 +676,34 @@ hr {
         <span>Total</span>
         <strong><?= rupiah($total) ?></strong>
     </div>
-</aside>
 
+</aside>
 </div>
 
 <script>
-const radios = document.querySelectorAll('input[name="payment_type"]');
+const radios = document.querySelectorAll(
+    'input[name="payment_type"]'
+);
+
 const cardForm = document.getElementById("cardForm");
 const cashBox = document.getElementById("cashBox");
 const payButton = document.getElementById("payButton");
-const bookingIdInput = document.getElementById("bookingId");
-const transactionIdInput = document.getElementById("transactionId");
 
-const cardHolder = document.querySelector('input[name="card_holder_name"]');
-const cardType = document.querySelector('select[name="card_type"]');
-const cardNumber = document.querySelector('input[name="card_number"]');
-const expiredDate = document.querySelector('input[name="expired_date"]');
-const cvv = document.querySelector('input[name="cvv"]');
+const cardHolder = document.querySelector(
+    'input[name="card_holder_name"]'
+);
+const cardType = document.querySelector(
+    'select[name="card_type"]'
+);
+const cardNumber = document.querySelector(
+    'input[name="card_number"]'
+);
+const expiredDate = document.querySelector(
+    'input[name="expired_date"]'
+);
+const cvv = document.querySelector(
+    'input[name="cvv"]'
+);
 
 function updatePaymentMethod() {
     const selected = document.querySelector(
@@ -650,14 +712,8 @@ function updatePaymentMethod() {
 
     if (!selected) return;
 
-    // TESTING ONLY: Card uses booking/transaction 2; Cash uses 4.
-    if (selected.value === "Cash") {
-        bookingIdInput.value = 4;
-        transactionIdInput.value = 4;
-    } else {
-        bookingIdInput.value = 2;
-        transactionIdInput.value = 2;
-    }
+    // Keep the booking and transaction IDs loaded by PHP.
+    // Do not change IDs when the payment method changes.
 
     if (selected.value === "Card") {
         cardForm.style.display = "grid";
