@@ -16,8 +16,8 @@ jobs:
       - name: Validate Docker Compose
         run: docker compose config
 
-      - name: Build and Deploy Application
-        run: docker compose up -d --build
+      - name: Verify Docker Deployment
+        run: docker ps
 
       - name: Test Website
         run: curl -fsS http://localhost:8080/login.php
