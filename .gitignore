@@ -1,0 +1,19 @@
+
+# File sementara
+*.log
+*.tmp
+
+# File backup
+*.bak
+*.old
+
+# Konfigurasi lokal
+.env
+.env.*
+
+# Folder editor
+.vscode/
+
+# Sistem operasi
+.DS_Store
+Thumbs.db
