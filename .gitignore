@@ -17,3 +17,5 @@
 # Sistem operasi
 .DS_Store
 Thumbs.db
+actions-runner/
+koneksi-laragon.php

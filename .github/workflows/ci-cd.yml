@@ -1,0 +1,23 @@
+name: CI/CD Travel Booking
+
+on:
+  push:
+    branches:
+      - travel-booking
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Validate Docker Compose
+        run: docker compose config
+
+      - name: Build and Deploy Application
+        run: docker compose up -d --build
+
+      - name: Test Website
+        run: curl -fsS http://localhost:8080/login.php
