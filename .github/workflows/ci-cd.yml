@@ -16,6 +16,9 @@ jobs:
       - name: Validate Docker Compose
         run: docker compose config
 
+      - name: Build and Deploy Application
+        run: docker compose -p travel-projectccit-main-main up -d --build
+
       - name: Verify Docker Deployment
         run: docker ps
 
