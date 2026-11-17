@@ -1,9 +1,10 @@
+
 <?php
 
-$host = "localhost";
-$user = "root";
-$password = "";
-$database = "db_traveldigabung";
+$host = getenv('DB_HOST') ?: 'localhost';
+$user = getenv('DB_USER') ?: 'root';
+$password = getenv('DB_PASSWORD') ?: '';
+$database = getenv('DB_NAME') ?: 'travel_projectdigabung';
 
 $conn = new mysqli(
     $host,
@@ -18,7 +19,6 @@ if ($conn->connect_error) {
 
 $conn->set_charset("utf8mb4");
 
-
 function rupiah($number)
 {
     return "Rp " . number_format(
@@ -29,7 +29,6 @@ function rupiah($number)
     );
 }
 
-
 function tanggal($date)
 {
     if (!$date) {
@@ -38,7 +37,6 @@ function tanggal($date)
 
     return date("d M Y", strtotime($date));
 }
-
 
 function waktu($date)
 {
