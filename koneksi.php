@@ -1,8 +1,8 @@
 <?php
-$host     = '127.0.0.1';
+$host = 'db';
 $username = 'root';
-$password = ''; 
-$dbname   = 'travel_projectdigabung';
+$password = 'travelroot123';
+$dbname = 'travel_projectdigabung';
 
 $conn = new mysqli($host, $username, $password, $dbname);
 
