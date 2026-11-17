@@ -63,7 +63,7 @@
             <i class="fa-solid fa-location-dot text-info"></i> Jakarta, Indonesia
           </div>
           <h1 class="hero-title">
-            Explore the Beauty of Indonesia, <span>Your Journey Starts Here</span>
+            Explore the Beauty of Indonesia, <span>Start Your Adventure Today</span>
           </h1>
           <p class="hero-desc">
             Let us take you to the most beautiful islands in Indonesia. Explore rich cultures, pristine beaches, and experience unforgettable tropical adventures.
