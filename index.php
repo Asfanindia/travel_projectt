@@ -52,6 +52,9 @@
   <link rel="stylesheet" href="css/index-style.css">
 </head>
 <body>
+<div style="text-align: center; padding: 12px; background-color: #e8f5e9; color: #2e7d32; font-weight: bold;">
+    Version 2.0 - Deployed via GitHub Actions
+</div>
 
   <nav class="navbar navbar-expand-lg sticky-top">
     <div class="container">
