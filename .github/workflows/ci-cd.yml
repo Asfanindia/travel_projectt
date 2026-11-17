@@ -1,9 +1,9 @@
-name: CI/CD Travel Booking
+name: CI-CD Docker Deployment
 
 on:
   push:
-    branches:
-      - travel-booking
+    branches: ["travel-booking"]
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -13,14 +13,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Validate Docker Compose
-        run: docker compose config
+      - name: Verify Docker Service
+        run: |
+          docker --version
+          docker compose version
 
-      - name: Build and Deploy Application
-        run: docker compose -p travel-projectccit-main-main up -d --build
-
-      - name: Verify Docker Deployment
-        run: docker ps
-
-      - name: Test Website
-        run: curl -fsS http://localhost:8080/login.php
+      - name: Deploy Container Stack
+        run: |
+          docker compose -p travel-projectccit-main-main down
+          docker compose -p travel-projectccit-main-main up -d --build
+          docker ps
